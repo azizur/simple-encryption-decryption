@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -e
+
+[ -n "$KEY_DIR" ] || KEY_DIR="$HOME/.keys"
+
+KEY_NAME="$1"
+[ -n "$KEY_NAME" ] || {
+  echo "usage: encrypt <key-name>" >&2
+  exit 1
+}
+
+KEY_FILE="${KEY_DIR%/}/$KEY_NAME"
+[ -f "$KEY_FILE" ] || {
+  echo "encrypt: key file not found: $KEY_FILE" >&2
+  exit 2
+}
+
+echo "key: $KEY_NAME"
+openssl aes-256-cbc -a -salt -pass file:"$KEY_FILE"
